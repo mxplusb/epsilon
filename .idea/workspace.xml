@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6f4d3a7e-6355-4614-bffa-94457603893c" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="false" />
+  </component>
+  <component name="GOROOT" url="file:///opt/homebrew/Cellar/go/1.19.1/libexec" />
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$USER_HOME$/go/pkg/mod/github.com/shabbyrobe/go-num@v0.0.0-20220218224608-bad1c8f534d7/i128.go" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2FmxR1cxBGeVbXsANNySFz6Xlw3" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/sienna&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../src/physics/geometry" />
+      <recent name="$PROJECT_DIR$/../src/physics/common" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Test.gobench geometry">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/.." />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$/.." />
+      <filePath value="$PROJECT_DIR$/.." />
+      <method v="2" />
+    </configuration>
+    <configuration name="BenchmarkUint64Mul in epsilon/src/physics/geometry" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/../src/physics/geometry" />
+      <root_directory value="$PROJECT_DIR$/.." />
+      <kind value="PACKAGE" />
+      <package value="epsilon/src/physics/geometry" />
+      <directory value="$PROJECT_DIR$/.." />
+      <filePath value="$PROJECT_DIR$/.." />
+      <framework value="gobench" />
+      <pattern value="^\QBenchmarkUint64Mul\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestFuzz in epsilon/src/physics/geometry" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/../src/physics/geometry" />
+      <root_directory value="$PROJECT_DIR$/.." />
+      <kind value="PACKAGE" />
+      <package value="epsilon/src/physics/geometry" />
+      <directory value="$PROJECT_DIR$/.." />
+      <filePath value="$PROJECT_DIR$/.." />
+      <framework value="gotest" />
+      <pattern value="^\QTestFuzz\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/.." />
+      <go_parameters value="-i" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$/.." />
+      <filePath value="$PROJECT_DIR$/.." />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test geometry" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/../src/physics/geometry" />
+      <root_directory value="$PROJECT_DIR$/.." />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$/../src/physics/geometry" />
+      <filePath value="$PROJECT_DIR$/.." />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="gobench geometry" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/../src/physics/geometry" />
+      <root_directory value="$PROJECT_DIR$/.." />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$/../src/physics/geometry" />
+      <filePath value="$PROJECT_DIR$/.." />
+      <framework value="gobench" />
+      <method v="2" />
+    </configuration>
+    <configuration name="int128_fuzz_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/../src/physics/geometry" />
+      <root_directory value="$PROJECT_DIR$/.." />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$/.." />
+      <filePath value="$PROJECT_DIR$/../src/physics/geometry/int128_fuzz_test.go" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.gobench geometry" />
+        <item itemvalue="Go Test.BenchmarkUint64Mul in epsilon/src/physics/geometry" />
+        <item itemvalue="Go Test.TestFuzz in epsilon/src/physics/geometry" />
+        <item itemvalue="Go Test.int128_fuzz_test.go" />
+        <item itemvalue="Go Test.go test geometry" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>
