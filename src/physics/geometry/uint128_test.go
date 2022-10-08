@@ -47,12 +47,12 @@ func u128s(s string) Uint128 {
 func randUint128(scratch []byte) Uint128 {
 	rand.Read(scratch)
 	u := Uint128{}
-	u.lo = binary.LittleEndian.Uint64(scratch)
+	u.lo = Uint64(binary.LittleEndian.Uint64(scratch))
 
 	if scratch[0]%2 == 1 {
 		// if we always generate hi bits, the universe will die before we
 		// test a number < maxInt64
-		u.hi = binary.LittleEndian.Uint64(scratch[8:])
+		u.hi = Uint64(binary.LittleEndian.Uint64(scratch[8:]))
 	}
 	return u
 }
@@ -132,7 +132,7 @@ func TestUint128Add(t *testing.T) {
 func TestUint128Add64(t *testing.T) {
 	for _, tc := range []struct {
 		a Uint128
-		b uint64
+		b Uint64
 		c Uint128
 	}{
 		{u64(1), 2, u64(3)},
@@ -174,8 +174,8 @@ func TestUint128AsFloat64Random(t *testing.T) {
 		rand.Read(bts)
 
 		num := Uint128{}
-		num.lo = binary.LittleEndian.Uint64(bts)
-		num.hi = binary.LittleEndian.Uint64(bts[8:])
+		num.lo = Uint64(binary.LittleEndian.Uint64(bts))
+		num.hi = Uint64(binary.LittleEndian.Uint64(bts[8:]))
 
 		af := num.AsFloat64()
 		bf := new(big.Float).SetFloat64(af)
@@ -298,8 +298,8 @@ func TestUint128FromFloat64Random(t *testing.T) {
 		rand.Read(bts)
 
 		num := Uint128{}
-		num.lo = binary.LittleEndian.Uint64(bts)
-		num.hi = binary.LittleEndian.Uint64(bts[8:])
+		num.lo = Uint64(binary.LittleEndian.Uint64(bts))
+		num.hi = Uint64(binary.LittleEndian.Uint64(bts[8:]))
 		rbf := num.AsBigFloat()
 
 		rf, _ := rbf.Float64()
@@ -781,7 +781,7 @@ func BenchmarkUint128Add(b *testing.B) {
 func BenchmarkUint128Add64(b *testing.B) {
 	for idx, tc := range []struct {
 		a    Uint128
-		b    uint64
+		b    Uint64
 		name string
 	}{
 		{zeroUint128, 0, "0+0"},
@@ -971,8 +971,8 @@ func BenchmarkUint128Mul(b *testing.B) {
 
 func BenchmarkUint128Mul64(b *testing.B) {
 	u := Uint128From64(maxUint64)
-	lim := uint64(b.N)
-	for i := uint64(0); i < lim; i++ {
+	lim := Uint64(b.N)
+	for i := Uint64(0); i < lim; i++ {
 		benchUint128Result = u.Mul64(i)
 	}
 }
@@ -1072,7 +1072,7 @@ func BenchmarkUint128QuoRemTZ(b *testing.B) {
 
 func BenchmarkUint128QuoRem64(b *testing.B) {
 	// FIXME: benchmark numbers of various sizes
-	u, v := u64(1234), uint64(56)
+	u, v := u64(1234), Uint64(56)
 	for i := 0; i < b.N; i++ {
 		benchUint128Result, _ = u.QuoRem64(v)
 	}
@@ -1083,7 +1083,7 @@ func BenchmarkUint128QuoRem64TZ(b *testing.B) {
 		zeros  int
 		useRem int
 		da     Uint128
-		db     uint64
+		db     Uint64
 	}
 	var cases []tc
 
@@ -1129,14 +1129,14 @@ func BenchmarkUint128QuoRem64TZ(b *testing.B) {
 
 func BenchmarkUint128Rem64(b *testing.B) {
 	b.Run("fast", func(b *testing.B) {
-		u, v := Uint128{1, 0}, uint64(56) // u.hi < v
+		u, v := Uint128{1, 0}, Uint64(56) // u.hi < v
 		for i := 0; i < b.N; i++ {
 			benchUint128Result = u.Rem64(v)
 		}
 	})
 
 	b.Run("slow", func(b *testing.B) {
-		u, v := Uint128{100, 0}, uint64(56) // u.hi >= v
+		u, v := Uint128{100, 0}, Uint64(56) // u.hi >= v
 		for i := 0; i < b.N; i++ {
 			benchUint128Result = u.Rem64(v)
 		}
@@ -1180,7 +1180,7 @@ func BenchmarkUint128Sub(b *testing.B) {
 func BenchmarkUint128Sub64(b *testing.B) {
 	for idx, tc := range []struct {
 		a    Uint128
-		b    uint64
+		b    Uint64
 		name string
 	}{
 		{zeroUint128, 0, "0+0"},

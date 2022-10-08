@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var i64 = Int128From64
+var i64 = Int128FromInt64
 
 func bigI64(i int64) *big.Int { return new(big.Int).SetInt64(i) }
 func bigs(s string) *big.Int {
@@ -38,12 +38,12 @@ func i128s(s string) Int128 {
 func randInt128(scratch []byte) Int128 {
 	rand.Read(scratch)
 	i := Int128{}
-	i.lo = binary.LittleEndian.Uint64(scratch)
+	i.lo = Uint64(binary.LittleEndian.Uint64(scratch))
 
 	if scratch[0]%2 == 1 {
 		// if we always generate hi bits, the universe will die before we
 		// test a number < maxInt64
-		i.hi = binary.LittleEndian.Uint64(scratch[8:])
+		i.hi = Uint64(binary.LittleEndian.Uint64(scratch[8:]))
 	}
 	if scratch[1]%2 == 1 {
 		i = i.Neg()
@@ -172,8 +172,8 @@ func TestInt128AsFloat64Random(t *testing.T) {
 		for bits := uint(1); bits <= 127; bits++ {
 			rand.Read(bts)
 
-			var loMask, hiMask uint64
-			var loSet, hiSet uint64
+			var loMask, hiMask Uint64
+			var loSet, hiSet Uint64
 			if bits > 64 {
 				loMask = maxUint64
 				hiMask = (1 << (bits - 64)) - 1
@@ -184,8 +184,8 @@ func TestInt128AsFloat64Random(t *testing.T) {
 			}
 
 			num := Int128{}
-			num.lo = (binary.LittleEndian.Uint64(bts) & loMask) | loSet
-			num.hi = (binary.LittleEndian.Uint64(bts[8:]) & hiMask) | hiSet
+			num.lo = (Uint64(binary.LittleEndian.Uint64(bts)) & loMask) | loSet
+			num.hi = (Uint64(binary.LittleEndian.Uint64(bts[8:])) & hiMask) | hiSet
 
 			for neg := 0; neg <= 1; neg++ {
 				if neg == 1 {
@@ -304,7 +304,7 @@ func TestInt128Format(t *testing.T) {
 
 func TestInt128From64(t *testing.T) {
 	for idx, tc := range []struct {
-		in  int64
+		in  Int64
 		out Int128
 	}{
 		{0, i64(0)},
@@ -314,7 +314,7 @@ func TestInt128From64(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("%d/%d=%s", idx, tc.in, tc.out), func(t *testing.T) {
 			
-			result := Int128From64(tc.in)
+			result := Int128FromInt64(tc.in)
 			require.Equal(t,tc.out, result, "found: (%d, %d), expected (%d, %d)", result.hi, result.lo, tc.out.hi, tc.out.lo)
 		})
 	}
@@ -379,8 +379,8 @@ func TestInt128FromFloat64Random(t *testing.T) {
 		rand.Read(bts)
 
 		num := Int128{}
-		num.lo = binary.LittleEndian.Uint64(bts)
-		num.hi = binary.LittleEndian.Uint64(bts[8:])
+		num.lo = Uint64(binary.LittleEndian.Uint64(bts))
+		num.hi = Uint64(binary.LittleEndian.Uint64(bts[8:]))
 		rbf := num.AsBigFloat()
 
 		rf, _ := rbf.Float64()
@@ -396,12 +396,12 @@ func TestInt128FromFloat64Random(t *testing.T) {
 
 func TestInt128FromSize(t *testing.T) {
 	
-	require.Equal(t,Int128From8(127), i128s("127"))
-	require.Equal(t,Int128From8(-128), i128s("-128"))
-	require.Equal(t,Int128From16(32767), i128s("32767"))
-	require.Equal(t,Int128From16(-32768), i128s("-32768"))
-	require.Equal(t,Int128From32(2147483647), i128s("2147483647"))
-	require.Equal(t,Int128From32(-2147483648), i128s("-2147483648"))
+	require.Equal(t, Int128FromInt8(127), i128s("127"))
+	require.Equal(t, Int128FromInt8(-128), i128s("-128"))
+	require.Equal(t, Int128FromInt16(32767), i128s("32767"))
+	require.Equal(t, Int128FromInt16(-32768), i128s("-32768"))
+	require.Equal(t, Int128FromInt32(2147483647), i128s("2147483647"))
+	require.Equal(t, Int128FromInt32(-2147483648), i128s("-2147483648"))
 }
 
 func TestInt128Inc(t *testing.T) {
@@ -529,7 +529,7 @@ func TestInt128MustInt64(t *testing.T) {
 				require.True(t,(recover() == nil) == tc.ok)
 			}()
 
-			require.Equal(t,tc.a, Int128From64(tc.a.MustInt64()))
+			require.Equal(t,tc.a, Int128FromInt64(tc.a.MustInt64()))
 		})
 	}
 }
@@ -796,9 +796,9 @@ func BenchmarkInt128FromBigInt(b *testing.B) {
 }
 
 var (
-	I64CastInput int64  = 0x7FFFFFFFFFFFFFFF
-	I32CastInput int32  = 0x7FFFFFFF
-	U64CastInput uint64 = 0x7FFFFFFFFFFFFFFF
+	I64CastInput Int64  = 0x7FFFFFFFFFFFFFFF
+	I32CastInput Int32  = 0x7FFFFFFF
+	U64CastInput Uint64 = 0x7FFFFFFFFFFFFFFF
 )
 
 func BenchmarkInt128FromCast(b *testing.B) {
@@ -811,17 +811,17 @@ func BenchmarkInt128FromCast(b *testing.B) {
 
 	b.Run("Int128FromI64", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			BenchInt128Result = Int128From64(I64CastInput)
+			BenchInt128Result = Int128FromInt64(I64CastInput)
 		}
 	})
-	b.Run("Int128FromU64", func(b *testing.B) {
+	b.Run("Int128FromUint64", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			BenchInt128Result = Int128FromU64(U64CastInput)
+			BenchInt128Result = Int128FromUint64(U64CastInput)
 		}
 	})
 	b.Run("Int128FromI32", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
-			BenchInt128Result = Int128From32(I32CastInput)
+			BenchInt128Result = Int128FromInt32(I32CastInput)
 		}
 	})
 }
@@ -897,16 +897,16 @@ func BenchmarkInt128LessOrEqualTo(b *testing.B) {
 }
 
 func BenchmarkInt128Mul(b *testing.B) {
-	v := Int128From64(maxInt64)
+	v := Int128FromInt64(maxInt64)
 	for i := 0; i < b.N; i++ {
 		BenchInt128Result = v.Mul(v)
 	}
 }
 
 func BenchmarkInt128Mul64(b *testing.B) {
-	v := Int128From64(maxInt64)
-	lim := int64(b.N)
-	for i := int64(0); i < lim; i++ {
+	v := Int128FromInt64(maxInt64)
+	lim := Int64(b.N)
+	for i := Int64(0); i < lim; i++ {
 		BenchInt128Result = v.Mul64(i)
 	}
 }

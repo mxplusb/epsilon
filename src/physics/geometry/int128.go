@@ -1,16 +1,9 @@
-// nb: this file is vendored from github.com/shabbyrobe/go-num
-//     because of compatiblility and consistency issues. the
-//     original library is well-tested, and those are ported as
-//     well. this file is licensed under the MIT license from
-//     that library.
-
 package geometry
 
 import (
 	"fmt"
 	"math"
 	"math/big"
-	"math/bits"
 )
 
 const (
@@ -18,17 +11,17 @@ const (
 )
 
 type Int128 struct {
-	hi uint64
-	lo uint64
+	hi Uint64
+	lo Uint64
 }
 
 // Int128FromRaw is the complement to Int128.Raw(); it creates an Int128 from two
-// uint64s representing the hi and lo bits.
-func Int128FromRaw(hi, lo uint64) Int128 { return Int128{hi: hi, lo: lo} }
+// Uint64s representing the hi and lo 
+func Int128FromRaw(hi, lo Uint64) Int128 { return Int128{hi: hi, lo: lo} }
 
-func Int128From64(v int64) (out Int128) {
+func Int128FromInt64(v Int64) (out Int128) {
 	// There's a no-branch way of calculating this:
-	//   out.lo = uint64(v)
+	//   out.lo = Uint64(v)
 	//   out.hi = ^((out.lo >> 63) + maxUint64)
 	//
 	// There may be a better one than that, but that's the one I found. Bogus
@@ -37,18 +30,18 @@ func Int128From64(v int64) (out Int128) {
 	// version eats 20 more points out of Go 1.12's inlining budget of 80 than
 	// the 'if v < 0' verson, which is probably worse overall.
 
-	var hi uint64
+	var hi Uint64
 	if v < 0 {
 		hi = maxUint64
 	}
-	return Int128{hi: hi, lo: uint64(v)}
+	return Int128{hi: hi, lo: Uint64(v)}
 }
 
-func Int128From32(v int32) Int128   { return Int128From64(int64(v)) }
-func Int128From16(v int16) Int128   { return Int128From64(int64(v)) }
-func Int128From8(v int8) Int128     { return Int128From64(int64(v)) }
-func Int128FromInt(v int) Int128    { return Int128From64(int64(v)) }
-func Int128FromU64(v uint64) Int128 { return Int128{lo: v} }
+func Int128FromInt32(v Int32) Int128 { return Int128FromInt64(Int64(v)) }
+func Int128FromInt16(v Int16) Int128 { return Int128FromInt64(Int64(v)) }
+func Int128FromInt8(v Int8) Int128   { return Int128FromInt64(Int64(v)) }
+func Int128FromInt(v int) Int128     { return Int128FromInt64(Int64(v)) }
+func Int128FromUint64(v Uint64) Int128 { return Int128{lo: v} }
 
 // Int128FromString creates a Int128 from a string. Overflow truncates to
 // MaxInt128/MinInt128 and sets accurate to 'false'. Only decimal strings are
@@ -94,10 +87,10 @@ func Int128FromBigInt(v *big.Int) (out Int128, accurate bool) {
 		switch lw {
 		case 0:
 		case 1:
-			u.lo = uint64(words[0])
+			u.lo = Uint64(words[0])
 		case 2:
-			u.hi = uint64(words[1])
-			u.lo = uint64(words[0])
+			u.hi = Uint64(words[1])
+			u.lo = Uint64(words[0])
 		default:
 			u, accurate = MaxUint128, false
 		}
@@ -107,15 +100,15 @@ func Int128FromBigInt(v *big.Int) (out Int128, accurate bool) {
 		switch lw {
 		case 0:
 		case 1:
-			u.lo = uint64(words[0])
+			u.lo = Uint64(words[0])
 		case 2:
-			u.lo = (uint64(words[1]) << 32) | (uint64(words[0]))
+			u.lo = (Uint64(words[1]) << 32) | (Uint64(words[0]))
 		case 3:
-			u.hi = uint64(words[2])
-			u.lo = (uint64(words[1]) << 32) | (uint64(words[0]))
+			u.hi = Uint64(words[2])
+			u.lo = (Uint64(words[1]) << 32) | (Uint64(words[0]))
 		case 4:
-			u.hi = (uint64(words[3]) << 32) | (uint64(words[2]))
-			u.lo = (uint64(words[1]) << 32) | (uint64(words[0]))
+			u.hi = (Uint64(words[3]) << 32) | (Uint64(words[2]))
+			u.lo = (Uint64(words[1]) << 32) | (Uint64(words[0]))
 		default:
 			u, accurate = MaxUint128, false
 		}
@@ -187,21 +180,21 @@ func Int128FromFloat64(f float64) (out Int128, inRange bool) {
 
 	} else if f < 0 {
 		if f >= spillNeg {
-			return Int128{hi: maxUint64, lo: uint64(f)}, true
+			return Int128{hi: maxUint64, lo: Uint64(f)}, true
 		} else if f >= minInt128Float {
 			f = -f
 			lo := math.Mod(f, wrapUint64Float) // f is guaranteed to be < 0 here.
-			return Int128{hi: ^uint64(f / wrapUint64Float), lo: ^uint64(lo)}, true
+			return Int128{hi: ^Uint64(f / wrapUint64Float), lo: ^Uint64(lo)}, true
 		} else {
 			return MinInt128, false
 		}
 
 	} else {
 		if f <= spillPos {
-			return Int128{lo: uint64(f)}, true
+			return Int128{lo: Uint64(f)}, true
 		} else if f <= maxInt128Float {
 			lo := math.Mod(f, wrapUint64Float) // f is guaranteed to be > 0 here.
-			return Int128{hi: uint64(f / wrapUint64Float), lo: uint64(lo)}, true
+			return Int128{hi: Uint64(f / wrapUint64Float), lo: Uint64(lo)}, true
 		} else {
 			return MaxInt128, false
 		}
@@ -218,9 +211,9 @@ func MustInt128FromFloat64(f float64) Int128 {
 
 func (i Int128) IsZero() bool { return i.lo == 0 && i.hi == 0 }
 
-// Raw returns access to the Int128 as a pair of uint64s. See Int128FromRaw() for
+// Raw returns access to the Int128 as a pair of Uint64s. See Int128FromRaw() for
 // the counterpart.
-func (i Int128) Raw() (hi uint64, lo uint64) { return i.hi, i.lo }
+func (i Int128) Raw() (hi Uint64, lo Uint64) { return i.hi, i.lo }
 
 func (i Int128) String() string {
 	// FIXME: This is good enough for now, but not forever.
@@ -256,11 +249,11 @@ func (i Int128) Format(s fmt.State, c rune) {
 func (i Int128) IntoBigInt(b *big.Int) {
 	neg := i.hi&int128SignBit != 0
 	if i.hi > 0 {
-		b.SetUint64(i.hi)
+		b.SetUint64(uint64(i.hi))
 		b.Lsh(b, 64)
 	}
 	var lo big.Int
-	lo.SetUint64(i.lo)
+	lo.SetUint64(uint64(i.lo))
 	b.Add(b, &lo)
 
 	if neg {
@@ -273,11 +266,11 @@ func (i Int128) AsBigInt() (b *big.Int) {
 	b = new(big.Int)
 	neg := i.hi&int128SignBit != 0
 	if i.hi > 0 {
-		b.SetUint64(i.hi)
+		b.SetUint64(uint64(i.hi))
 		b.Lsh(b, 64)
 	}
 	var lo big.Int
-	lo.SetUint64(i.lo)
+	lo.SetUint64(uint64(i.lo))
 	b.Add(b, &lo)
 
 	if neg {
@@ -339,20 +332,20 @@ func (i Int128) IsInt64() bool {
 
 // MustInt64 converts i to a signed 64-bit integer if the conversion would succeed, and
 // panics if it would not.
-func (i Int128) MustInt64() int64 {
+func (i Int128) MustInt64() Int64 {
 	if i.hi&int128SignBit != 0 {
 		if i.hi == maxUint64 && i.lo >= 0x8000000000000000 {
-			return -int64(^(i.lo - 1))
+			return -Int64(^(i.lo - 1))
 		}
 	} else {
 		if i.hi == 0 && i.lo <= maxInt64 {
-			return int64(i.lo)
+			return Int64(i.lo)
 		}
 	}
 	panic(fmt.Errorf("Int128 %v is not representable as an int64", i))
 }
 
-// AsUint64 truncates the Int128 to fit in a uint64. Values outside the range will
+// AsUint64 truncates the Int128 to fit in a Uint64. Values outside the range will
 // over/underflow. Signedness is discarded, as with the following conversion:
 //
 //	var i int64 = -3
@@ -361,11 +354,11 @@ func (i Int128) MustInt64() int64 {
 //	// fffffffd
 //
 // See IsUint64() if you want to check before you convert.
-func (i Int128) AsUint64() uint64 {
+func (i Int128) AsUint64() Uint64 {
 	return i.lo
 }
 
-// AsUint64 truncates the Int128 to fit in a uint64. Values outside the range will
+// AsUint64 truncates the Int128 to fit in a Uint64. Values outside the range will
 // over/underflow. See IsUint64() if you want to check before you convert.
 func (i Int128) IsUint64() bool {
 	return i.hi == 0
@@ -373,9 +366,9 @@ func (i Int128) IsUint64() bool {
 
 // MustUint64 converts i to an unsigned 64-bit integer if the conversion would succeed,
 // and panics if it would not.
-func (i Int128) MustUint64() uint64 {
+func (i Int128) MustUint64() Uint64 {
 	if i.hi != 0 {
-		panic(fmt.Errorf("Int128 %v is not representable as a uint64", i))
+		panic(fmt.Errorf("Int128 %v is not representable as a Uint64", i))
 	}
 	return i.lo
 }
@@ -408,15 +401,15 @@ func (i Int128) Dec() (v Int128) {
 }
 
 func (i Int128) Add(n Int128) (v Int128) {
-	var carry uint64
-	v.lo, carry = bits.Add64(i.lo, n.lo, 0)
-	v.hi, _ = bits.Add64(i.hi, n.hi, carry)
+	var carry Uint64
+	v.lo, carry = Add64(i.lo, n.lo, 0)
+	v.hi, _ = Add64(i.hi, n.hi, carry)
 	return v
 }
 
 func (i Int128) Add64(n int64) (v Int128) {
-	var carry uint64
-	v.lo, carry = bits.Add64(i.lo, uint64(n), 0)
+	var carry Uint64
+	v.lo, carry = Add64(i.lo, Uint64(n), 0)
 	if n < 0 {
 		v.hi = i.hi + maxUint64 + carry
 	} else {
@@ -426,19 +419,19 @@ func (i Int128) Add64(n int64) (v Int128) {
 }
 
 func (i Int128) Sub(n Int128) (v Int128) {
-	var borrowed uint64
-	v.lo, borrowed = bits.Sub64(i.lo, n.lo, 0)
-	v.hi, _ = bits.Sub64(i.hi, n.hi, borrowed)
+	var borrowed Uint64
+	v.lo, borrowed = Sub64(i.lo, n.lo, 0)
+	v.hi, _ = Sub64(i.hi, n.hi, borrowed)
 	return v
 }
 
 func (i Int128) Sub64(n int64) (v Int128) {
-	var borrowed uint64
+	var borrowed Uint64
 	if n < 0 {
-		v.lo, borrowed = bits.Sub64(i.lo, uint64(n), 0)
+		v.lo, borrowed = Sub64(i.lo, Uint64(n), 0)
 		v.hi = i.hi - maxUint64 - borrowed
 	} else {
-		v.lo, borrowed = bits.Sub64(i.lo, uint64(n), 0)
+		v.lo, borrowed = Sub64(i.lo, Uint64(n), 0)
 		v.hi = i.hi - borrowed
 	}
 	return v
@@ -532,8 +525,8 @@ func (i Int128) Cmp(n Int128) int {
 // satisfy the above constraints.
 //
 func (i Int128) Cmp64(n int64) int {
-	var nhi uint64
-	var nlo = uint64(n)
+	var nhi Uint64
+	var nlo = Uint64(n)
 	if n < 0 {
 		nhi = maxUint64
 	}
@@ -554,8 +547,8 @@ func (i Int128) Equal(n Int128) bool {
 }
 
 func (i Int128) Equal64(n int64) bool {
-	var nhi uint64
-	var nlo = uint64(n)
+	var nhi Uint64
+	var nlo = Uint64(n)
 	if n < 0 {
 		nhi = maxUint64
 	}
@@ -572,8 +565,8 @@ func (i Int128) GreaterThan(n Int128) bool {
 }
 
 func (i Int128) GreaterThan64(n int64) bool {
-	var nhi uint64
-	var nlo = uint64(n)
+	var nhi Uint64
+	var nlo = Uint64(n)
 	if n < 0 {
 		nhi = maxUint64
 	}
@@ -599,8 +592,8 @@ func (i Int128) GreaterOrEqualTo(n Int128) bool {
 }
 
 func (i Int128) GreaterOrEqualTo64(n int64) bool {
-	var nhi uint64
-	var nlo = uint64(n)
+	var nhi Uint64
+	var nlo = Uint64(n)
 	if n < 0 {
 		nhi = maxUint64
 	}
@@ -626,8 +619,8 @@ func (i Int128) LessThan(n Int128) bool {
 }
 
 func (i Int128) LessThan64(n int64) bool {
-	var nhi uint64
-	var nlo = uint64(n)
+	var nhi Uint64
+	var nlo = Uint64(n)
 	if n < 0 {
 		nhi = maxUint64
 	}
@@ -653,8 +646,8 @@ func (i Int128) LessOrEqualTo(n Int128) bool {
 }
 
 func (i Int128) LessOrEqualTo64(n int64) bool {
-	var nhi uint64
-	var nlo = uint64(n)
+	var nhi Uint64
+	var nlo = Uint64(n)
 	if n < 0 {
 		nhi = maxUint64
 	}
@@ -675,18 +668,18 @@ func (i Int128) LessOrEqualTo64(n int64) bool {
 // Overflow should wrap around, as per the Go spec.
 //
 func (i Int128) Mul(n Int128) (dest Int128) {
-	hi, lo := bits.Mul64(i.lo, n.lo)
+	hi, lo := Mul64(i.lo, n.lo)
 	hi += i.hi*n.lo + i.lo*n.hi
 	return Int128{hi, lo}
 }
 
-func (i Int128) Mul64(n int64) Int128 {
-	nlo := uint64(n)
-	var nhi uint64
+func (i Int128) Mul64(n Int64) Int128 {
+	nlo := Uint64(n)
+	var nhi Uint64
 	if n < 0 {
 		nhi = maxUint64
 	}
-	hi, lo := bits.Mul64(i.lo, nlo)
+	hi, lo := Mul64(i.lo, nlo)
 	hi += i.hi*nlo + i.lo*nhi
 	return Int128{hi, lo}
 }
@@ -740,12 +733,12 @@ func (i Int128) QuoRem64(by int64) (q, r Int128) {
 		by = -by
 	}
 
-	n := uint64(by)
+	n := Uint64(by)
 	if i.hi < n {
-		q.lo, r.lo = bits.Div64(i.hi, i.lo, n)
+		q.lo, r.lo = Div64(i.hi, i.lo, n)
 	} else {
-		q.hi, r.lo = bits.Div64(0, i.hi, n)
-		q.lo, r.lo = bits.Div64(r.lo, i.lo, n)
+		q.hi, r.lo = Div64(0, i.hi, n)
+		q.lo, r.lo = Div64(r.lo, i.lo, n)
 	}
 	if ineg != byneg {
 		q = q.Neg()
@@ -788,13 +781,13 @@ func (i Int128) Quo64(by int64) (q Int128) {
 		by = -by
 	}
 
-	n := uint64(by)
+	n := Uint64(by)
 	if i.hi < n {
-		q.lo, _ = bits.Div64(i.hi, i.lo, n)
+		q.lo, _ = Div64(i.hi, i.lo, n)
 	} else {
-		var rlo uint64
-		q.hi, rlo = bits.Div64(0, i.hi, n)
-		q.lo, _ = bits.Div64(rlo, i.lo, n)
+		var rlo Uint64
+		q.hi, rlo = Div64(0, i.hi, n)
+		q.lo, _ = Div64(rlo, i.lo, n)
 	}
 	if ineg != byneg {
 		q = q.Neg()
@@ -820,12 +813,12 @@ func (i Int128) Rem64(by int64) (r Int128) {
 		by = -by
 	}
 
-	n := uint64(by)
+	n := Uint64(by)
 	if i.hi < n {
-		_, r.lo = bits.Div64(i.hi, i.lo, n)
+		_, r.lo = Div64(i.hi, i.lo, n)
 	} else {
-		_, r.lo = bits.Div64(0, i.hi, n)
-		_, r.lo = bits.Div64(r.lo, i.lo, n)
+		_, r.lo = Div64(0, i.hi, n)
+		_, r.lo = Div64(r.lo, i.lo, n)
 	}
 	if ineg {
 		r = r.Neg()

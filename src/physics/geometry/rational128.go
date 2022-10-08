@@ -26,10 +26,10 @@ func Rational128FromInt64(v Int64) (r Rational128) {
 	r = Rational128{}
 	if v > 0 {
 		r.sign = 1
-		r.numerator = Int128From64(int64(v))
+		r.numerator = Int128FromInt64(v)
 	} else if v < 0 {
 		r.sign = -1
-		r.numerator = Int128From64(int64(-v))
+		r.numerator = Int128FromInt64(-v)
 	} else {
 		r.sign = 0
 		r.numerator = Int128FromInt(0)

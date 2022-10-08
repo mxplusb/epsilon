@@ -1,6 +1,6 @@
 package geometry
 
-func NewRational64(numerator Int64, denominator Int64) Rational64 {
+func Rational64FromInt64s(numerator Int64, denominator Int64) Rational64 {
 	r := Rational64{}
 
 	if numerator > 0 {

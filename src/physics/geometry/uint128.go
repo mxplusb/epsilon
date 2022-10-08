@@ -4,23 +4,22 @@ import (
 	"fmt"
 	"math"
 	"math/big"
-	"math/bits"
 	"strconv"
 )
 
 type Uint128 struct {
-	hi, lo uint64
+	hi, lo Uint64
 }
 
 // Uint128FromRaw is the complement to Uint128.Raw(); it creates an Uint128 from two
-// uint64s representing the hi and lo bits.
-func Uint128FromRaw(hi, lo uint64) Uint128 { return Uint128{hi: hi, lo: lo} }
+// Uint64s representing the hi and lo 
+func Uint128FromRaw(hi, lo Uint64) Uint128 { return Uint128{hi: hi, lo: lo} }
 
-func Uint128From64(v uint64) Uint128 { return Uint128{lo: v} }
-func Uint128From32(v uint32) Uint128 { return Uint128{lo: uint64(v)} }
-func Uint128From16(v uint16) Uint128 { return Uint128{lo: uint64(v)} }
-func Uint128From8(v uint8) Uint128   { return Uint128{lo: uint64(v)} }
-func Uint128FromUint(v uint) Uint128 { return Uint128{lo: uint64(v)} }
+func Uint128From64(v Uint64) Uint128 { return Uint128{lo: v} }
+func Uint128From32(v uint32) Uint128 { return Uint128{lo: Uint64(v)} }
+func Uint128From16(v uint16) Uint128 { return Uint128{lo: Uint64(v)} }
+func Uint128From8(v uint8) Uint128   { return Uint128{lo: Uint64(v)} }
+func Uint128FromUint(v uint) Uint128 { return Uint128{lo: Uint64(v)} }
 
 // Uint128FromI64 creates a Uint128 from an int64 if the conversion is possible, and
 // sets inRange to false if not.
@@ -28,7 +27,7 @@ func Uint128FromI64(v int64) (out Uint128, inRange bool) {
 	if v < 0 {
 		return zeroUint128, false
 	}
-	return Uint128{lo: uint64(v)}, true
+	return Uint128{lo: Uint64(v)}, true
 }
 
 func MustUint128FromI64(v int64) (out Uint128) {
@@ -79,9 +78,9 @@ func Uint128FromBigInt(v *big.Int) (out Uint128, inRange bool) {
 		case 0:
 			return Uint128{}, true
 		case 1:
-			return Uint128{lo: uint64(words[0])}, true
+			return Uint128{lo: Uint64(words[0])}, true
 		case 2:
-			return Uint128{hi: uint64(words[1]), lo: uint64(words[0])}, true
+			return Uint128{hi: Uint64(words[1]), lo: Uint64(words[0])}, true
 		default:
 			return MaxUint128, false
 		}
@@ -92,15 +91,15 @@ func Uint128FromBigInt(v *big.Int) (out Uint128, inRange bool) {
 		case 0:
 			return Uint128{}, true
 		case 1:
-			return Uint128{lo: uint64(words[0])}, true
+			return Uint128{lo: Uint64(words[0])}, true
 		case 2:
-			return Uint128{lo: (uint64(words[1]) << 32) | (uint64(words[0]))}, true
+			return Uint128{lo: (Uint64(words[1]) << 32) | (Uint64(words[0]))}, true
 		case 3:
-			return Uint128{hi: uint64(words[2]), lo: (uint64(words[1]) << 32) | (uint64(words[0]))}, true
+			return Uint128{hi: Uint64(words[2]), lo: (Uint64(words[1]) << 32) | (Uint64(words[0]))}, true
 		case 4:
 			return Uint128{
-				hi: (uint64(words[3]) << 32) | (uint64(words[2])),
-				lo: (uint64(words[1]) << 32) | (uint64(words[0])),
+				hi: (Uint64(words[3]) << 32) | (Uint64(words[2])),
+				lo: (Uint64(words[1]) << 32) | (Uint64(words[0])),
 			}, true
 		default:
 			return MaxUint128, false
@@ -141,7 +140,7 @@ func MustUint128FromFloat32(f float32) Uint128 {
 // NaN is treated as 0, inRange is set to false. This may change to a panic
 // at some point.
 func Uint128FromFloat64(f float64) (out Uint128, inRange bool) {
-	// WARNING: casts from float64 to uint64 have some astonishing properties:
+	// WARNING: casts from float64 to Uint64 have some astonishing properties:
 	// https://github.com/golang/go/issues/29463
 	if f == 0 {
 		return Uint128{}, true
@@ -150,11 +149,11 @@ func Uint128FromFloat64(f float64) (out Uint128, inRange bool) {
 		return Uint128{}, false
 
 	} else if f <= maxRepresentableUint64Float {
-		return Uint128{lo: uint64(f)}, true
+		return Uint128{lo: Uint64(f)}, true
 
 	} else if f <= maxRepresentableUint128Float {
 		lo := math.Mod(f, wrapUint64Float) // f is guaranteed to be > 0 here.
-		return Uint128{hi: uint64(f / wrapUint64Float), lo: uint64(lo)}, true
+		return Uint128{hi: Uint64(f / wrapUint64Float), lo: Uint64(lo)}, true
 
 	} else if f != f { // (f != f) == NaN
 		return Uint128{}, false
@@ -174,9 +173,9 @@ func MustUint128FromFloat64(f float64) Uint128 {
 
 func (u Uint128) IsZero() bool { return u.lo == 0 && u.hi == 0 }
 
-// Raw returns access to the Uint128 as a pair of uint64s. See Uint128FromRaw() for
+// Raw returns access to the Uint128 as a pair of Uint64s. See Uint128FromRaw() for
 // the counterpart.
-func (u Uint128) Raw() (hi, lo uint64) { return u.hi, u.lo }
+func (u Uint128) Raw() (hi, lo Uint64) { return u.hi, u.lo }
 
 func (u Uint128) String() string {
 	// FIXME: This is good enough for now, but not forever.
@@ -184,7 +183,7 @@ func (u Uint128) String() string {
 		return "0"
 	}
 	if u.hi == 0 {
-		return strconv.FormatUint(u.lo, 10)
+		return strconv.FormatUint(uint64(u.lo), 10)
 	}
 	v := u.AsBigInt()
 	return v.String()
@@ -241,11 +240,11 @@ func (u Uint128) IntoBigInt(b *big.Int) {
 
 	default:
 		if u.hi > 0 {
-			b.SetUint64(u.hi)
+			b.SetUint64(uint64(u.hi))
 			b.Lsh(b, 64)
 		}
 		var lo big.Int
-		lo.SetUint64(u.lo)
+		lo.SetUint64(uint64(u.lo))
 		b.Add(b, &lo)
 	}
 }
@@ -284,64 +283,64 @@ func (u Uint128) IsInt128() bool {
 	return u.hi& int128SignBit == 0
 }
 
-// AsUint64 truncates the Uint128 to fit in a uint64. Values outside the range
+// AsUint64 truncates the Uint128 to fit in a Uint64. Values outside the range
 // will over/underflow. See IsUint64() if you want to check before you convert.
-func (u Uint128) AsUint64() uint64 {
+func (u Uint128) AsUint64() Uint64 {
 	return u.lo
 }
 
-// IsUint64 reports whether u can be represented as a uint64.
+// IsUint64 reports whether u can be represented as a Uint64.
 func (u Uint128) IsUint64() bool {
 	return u.hi == 0
 }
 
 // MustUint64 converts i to an unsigned 64-bit integer if the conversion would succeed,
 // and panics if it would not.
-func (u Uint128) MustUint64() uint64 {
+func (u Uint128) MustUint64() Uint64 {
 	if u.hi != 0 {
-		panic(fmt.Errorf("Uint128 %v is not representable as a uint64", u))
+		panic(fmt.Errorf("Uint128 %v is not representable as a Uint64", u))
 	}
 	return u.lo
 }
 
 func (u Uint128) Inc() (v Uint128) {
-	var carry uint64
-	v.lo, carry = bits.Add64(u.lo, 1, 0)
+	var carry Uint64
+	v.lo, carry = Add64(u.lo, 1, 0)
 	v.hi = u.hi + carry
 	return v
 }
 
 func (u Uint128) Dec() (v Uint128) {
-	var borrowed uint64
-	v.lo, borrowed = bits.Sub64(u.lo, 1, 0)
+	var borrowed Uint64
+	v.lo, borrowed = Sub64(u.lo, 1, 0)
 	v.hi = u.hi - borrowed
 	return v
 }
 
 func (u Uint128) Add(n Uint128) (v Uint128) {
-	var carry uint64
-	v.lo, carry = bits.Add64(u.lo, n.lo, 0)
-	v.hi, _ = bits.Add64(u.hi, n.hi, carry)
+	var carry Uint64
+	v.lo, carry = Add64(u.lo, n.lo, 0)
+	v.hi, _ = Add64(u.hi, n.hi, carry)
 	return v
 }
 
-func (u Uint128) Add64(n uint64) (v Uint128) {
-	var carry uint64
-	v.lo, carry = bits.Add64(u.lo, n, 0)
+func (u Uint128) Add64(n Uint64) (v Uint128) {
+	var carry Uint64
+	v.lo, carry = Add64(u.lo, n, 0)
 	v.hi = u.hi + carry
 	return v
 }
 
 func (u Uint128) Sub(n Uint128) (v Uint128) {
-	var borrowed uint64
-	v.lo, borrowed = bits.Sub64(u.lo, n.lo, 0)
-	v.hi, _ = bits.Sub64(u.hi, n.hi, borrowed)
+	var borrowed Uint64
+	v.lo, borrowed = Sub64(u.lo, n.lo, 0)
+	v.hi, _ = Sub64(u.hi, n.hi, borrowed)
 	return v
 }
 
-func (u Uint128) Sub64(n uint64) (v Uint128) {
-	var borrowed uint64
-	v.lo, borrowed = bits.Sub64(u.lo, n, 0)
+func (u Uint128) Sub64(n Uint64) (v Uint128) {
+	var borrowed Uint64
+	v.lo, borrowed = Sub64(u.lo, n, 0)
 	v.hi = u.hi - borrowed
 	return v
 }
@@ -372,7 +371,7 @@ func (u Uint128) Cmp(n Uint128) int {
 	return 0
 }
 
-func (u Uint128) Cmp64(n uint64) int {
+func (u Uint128) Cmp64(n Uint64) int {
 	if u.hi > 0 || u.lo > n {
 		return 1
 	} else if u.lo < n {
@@ -385,7 +384,7 @@ func (u Uint128) Equal(n Uint128) bool {
 	return u.hi == n.hi && u.lo == n.lo
 }
 
-func (u Uint128) Equal64(n uint64) bool {
+func (u Uint128) Equal64(n Uint64) bool {
 	return u.hi == 0 && u.lo == n
 }
 
@@ -393,7 +392,7 @@ func (u Uint128) GreaterThan(n Uint128) bool {
 	return u.hi > n.hi || (u.hi == n.hi && u.lo > n.lo)
 }
 
-func (u Uint128) GreaterThan64(n uint64) bool {
+func (u Uint128) GreaterThan64(n Uint64) bool {
 	return u.hi > 0 || u.lo > n
 }
 
@@ -401,7 +400,7 @@ func (u Uint128) GreaterOrEqualTo(n Uint128) bool {
 	return u.hi > n.hi || (u.hi == n.hi && u.lo >= n.lo)
 }
 
-func (u Uint128) GreaterOrEqualTo64(n uint64) bool {
+func (u Uint128) GreaterOrEqualTo64(n Uint64) bool {
 	return u.hi > 0 || u.lo >= n
 }
 
@@ -409,7 +408,7 @@ func (u Uint128) LessThan(n Uint128) bool {
 	return u.hi < n.hi || (u.hi == n.hi && u.lo < n.lo)
 }
 
-func (u Uint128) LessThan64(n uint64) bool {
+func (u Uint128) LessThan64(n Uint64) bool {
 	return u.hi == 0 && u.lo < n
 }
 
@@ -417,7 +416,7 @@ func (u Uint128) LessOrEqualTo(n Uint128) bool {
 	return u.hi < n.hi || (u.hi == n.hi && u.lo <= n.lo)
 }
 
-func (u Uint128) LessOrEqualTo64(n uint64) bool {
+func (u Uint128) LessOrEqualTo64(n Uint64) bool {
 	return u.hi == 0 && u.lo <= n
 }
 
@@ -427,7 +426,7 @@ func (u Uint128) And(n Uint128) Uint128 {
 	return u
 }
 
-func (u Uint128) And64(n uint64) Uint128 {
+func (u Uint128) And64(n Uint64) Uint128 {
 	return Uint128{lo: u.lo & n}
 }
 
@@ -449,7 +448,7 @@ func (u Uint128) Or(n Uint128) (out Uint128) {
 	return out
 }
 
-func (u Uint128) Or64(n uint64) Uint128 {
+func (u Uint128) Or64(n Uint64) Uint128 {
 	u.lo = u.lo | n
 	return u
 }
@@ -460,26 +459,26 @@ func (u Uint128) Xor(v Uint128) Uint128 {
 	return u
 }
 
-func (u Uint128) Xor64(v uint64) Uint128 {
+func (u Uint128) Xor64(v Uint64) Uint128 {
 	u.hi = u.hi ^ 0
 	u.lo = u.lo ^ v
 	return u
 }
 
-// BitLen returns the length of the absolute value of u in bits. The bit length of 0 is 0.
+// BitLen returns the length of the absolute value of u in  The bit length of 0 is 0.
 func (u Uint128) BitLen() int {
 	if u.hi > 0 {
-		return bits.Len64(u.hi) + 64
+		return Len64(u.hi) + 64
 	}
-	return bits.Len64(u.lo)
+	return Len64(u.lo)
 }
 
 // OnesCount returns the number of one bits ("population count") in u.
 func (u Uint128) OnesCount() int {
 	if u.hi > 0 {
-		return bits.OnesCount64(u.hi) + 64
+		return OnesCount64(u.hi) + 64
 	}
-	return bits.OnesCount64(u.lo)
+	return OnesCount64(u.lo)
 }
 
 // Bit returns the value of the i'th bit of x. That is, it returns (x>>i)&1.
@@ -553,13 +552,13 @@ func (u Uint128) Rsh(n uint) (v Uint128) {
 }
 
 func (u Uint128) Mul(n Uint128) Uint128 {
-	hi, lo := bits.Mul64(u.lo, n.lo)
+	hi, lo := Mul64(u.lo, n.lo)
 	hi += u.hi*n.lo + u.lo*n.hi
 	return Uint128{hi, lo}
 }
 
-func (u Uint128) Mul64(n uint64) (dest Uint128) {
-	dest.hi, dest.lo = bits.Mul64(u.lo, n)
+func (u Uint128) Mul64(n Uint64) (dest Uint128) {
+	dest.hi, dest.lo = Mul64(u.lo, n)
 	dest.hi += u.hi * n
 	return dest
 }
@@ -582,10 +581,10 @@ func (u Uint128) Quo(by Uint128) (q Uint128) {
 
 	var byLoLeading0, byHiLeading0, byLeading0 uint
 	if by.hi == 0 {
-		byLoLeading0, byHiLeading0 = uint(bits.LeadingZeros64(by.lo)), 64
+		byLoLeading0, byHiLeading0 = uint(LeadingZeros64(by.lo)), 64
 		byLeading0 = byLoLeading0 + 64
 	} else {
-		byHiLeading0 = uint(bits.LeadingZeros64(by.hi))
+		byHiLeading0 = uint(LeadingZeros64(by.hi))
 		byLeading0 = byHiLeading0
 	}
 
@@ -614,12 +613,12 @@ func (u Uint128) Quo(by Uint128) (q Uint128) {
 	}
 }
 
-func (u Uint128) Quo64(by uint64) (q Uint128) {
+func (u Uint128) Quo64(by Uint64) (q Uint128) {
 	if u.hi < by {
-		q.lo, _ = bits.Div64(u.hi, u.lo, by)
+		q.lo, _ = Div64(u.hi, u.lo, by)
 	} else {
 		q.hi = u.hi / by
-		q.lo, _ = bits.Div64(u.hi%by, u.lo, by)
+		q.lo, _ = Div64(u.hi%by, u.lo, by)
 	}
 	return q
 }
@@ -648,10 +647,10 @@ func (u Uint128) QuoRem(by Uint128) (q, r Uint128) {
 
 	var byLoLeading0, byHiLeading0, byLeading0 uint
 	if by.hi == 0 {
-		byLoLeading0, byHiLeading0 = uint(bits.LeadingZeros64(by.lo)), 64
+		byLoLeading0, byHiLeading0 = uint(LeadingZeros64(by.lo)), 64
 		byLeading0 = byLoLeading0 + 64
 	} else {
-		byHiLeading0 = uint(bits.LeadingZeros64(by.hi))
+		byHiLeading0 = uint(LeadingZeros64(by.hi))
 		byLeading0 = byHiLeading0
 	}
 
@@ -683,12 +682,12 @@ func (u Uint128) QuoRem(by Uint128) (q, r Uint128) {
 	}
 }
 
-func (u Uint128) QuoRem64(by uint64) (q, r Uint128) {
+func (u Uint128) QuoRem64(by Uint64) (q, r Uint128) {
 	if u.hi < by {
-		q.lo, r.lo = bits.Div64(u.hi, u.lo, by)
+		q.lo, r.lo = Div64(u.hi, u.lo, by)
 	} else {
-		q.hi, r.lo = bits.Div64(0, u.hi, by)
-		q.lo, r.lo = bits.Div64(r.lo, u.lo, by)
+		q.hi, r.lo = Div64(0, u.hi, by)
+		q.lo, r.lo = Div64(r.lo, u.lo, by)
 	}
 	return q, r
 }
@@ -702,31 +701,31 @@ func (u Uint128) Rem(by Uint128) (r Uint128) {
 	return r
 }
 
-func (u Uint128) Rem64(by uint64) (r Uint128) {
-	// XXX: bits.Rem64 (added in 1.14) shows no noticeable improvement on my 8th-gen i7
+func (u Uint128) Rem64(by Uint64) (r Uint128) {
+	// XXX: Rem64 (added in 1.14) shows no noticeable improvement on my 8th-gen i7
 	// (though it sounds like it isn't necessarily meant to):
 	// https://github.com/golang/go/issues/28970
 	// if u.hi < by {
-	//     _, r.lo = bits.Rem64(u.hi, u.lo, by)
+	//     _, r.lo = Rem64(u.hi, u.lo, by)
 	// } else {
-	//     _, r.lo = bits.Rem64(bits.Rem64(0, u.hi, by), u.lo, by)
+	//     _, r.lo = Rem64(Rem64(0, u.hi, by), u.lo, by)
 	// }
 
 	if u.hi < by {
-		_, r.lo = bits.Div64(u.hi, u.lo, by)
+		_, r.lo = Div64(u.hi, u.lo, by)
 	} else {
-		_, r.lo = bits.Div64(0, u.hi, by)
-		_, r.lo = bits.Div64(r.lo, u.lo, by)
+		_, r.lo = Div64(0, u.hi, by)
+		_, r.lo = Div64(r.lo, u.lo, by)
 	}
 	return r
 }
 
 func (u Uint128) Reverse() Uint128 {
-	return Uint128{hi: bits.Reverse64(u.lo), lo: bits.Reverse64(u.hi)}
+	return Uint128{hi: Reverse64(u.lo), lo: Reverse64(u.hi)}
 }
 
 func (u Uint128) ReverseBytes() Uint128 {
-	return Uint128{hi: bits.ReverseBytes64(u.lo), lo: bits.ReverseBytes64(u.hi)}
+	return Uint128{hi: ReverseBytes64(u.lo), lo: ReverseBytes64(u.hi)}
 }
 
 // To rotate u right by k bits, call u.RotateLeft(-k).
@@ -750,24 +749,24 @@ func (u Uint128) RotateLeft(k int) Uint128 {
 
 func (u Uint128) LeadingZeros() uint {
 	if u.hi == 0 {
-		return uint(bits.LeadingZeros64(u.lo)) + 64
+		return uint(LeadingZeros64(u.lo)) + 64
 	} else {
-		return uint(bits.LeadingZeros64(u.hi))
+		return uint(LeadingZeros64(u.hi))
 	}
 }
 
 func (u Uint128) TrailingZeros() uint {
 	if u.lo == 0 {
-		return uint(bits.TrailingZeros64(u.hi)) + 64
+		return uint(TrailingZeros64(u.hi)) + 64
 	} else {
-		return uint(bits.TrailingZeros64(u.lo))
+		return uint(TrailingZeros64(u.lo))
 	}
 }
 
 // Hacker's delight 9-4, divlu:
-func quo128by64(u1, u0, v uint64, vLeading0 uint) (q uint64) {
-	var b uint64 = 1 << 32
-	var un1, un0, vn1, vn0, q1, q0, un32, un21, un10, rhat, vs, left, right uint64
+func quo128by64(u1, u0, v Uint64, vLeading0 uint) (q Uint64) {
+	var b Uint64 = 1 << 32
+	var un1, un0, vn1, vn0, q1, q0, un32, un21, un10, rhat, vs, left, right Uint64
 
 	vs = v << vLeading0
 
@@ -825,9 +824,9 @@ again2:
 }
 
 // Hacker's delight 9-4, divlu:
-func quorem128by64(u1, u0, v uint64, vLeading0 uint) (q, r uint64) {
-	var b uint64 = 1 << 32
-	var un1, un0, vn1, vn0, q1, q0, un32, un21, un10, rhat, left, right uint64
+func quorem128by64(u1, u0, v Uint64, vLeading0 uint) (q, r Uint64) {
+	var b Uint64 = 1 << 32
+	var un1, un0, vn1, vn0, q1, q0, un32, un21, un10, rhat, left, right Uint64
 
 	v <<= vLeading0
 
@@ -1025,10 +1024,10 @@ func (u Uint128) PutBigEndian(b []byte) {
 func MustUint128FromBigEndian(b []byte) Uint128 {
 	_ = b[15] // BCE
 	return Uint128{
-		lo: uint64(b[15]) | uint64(b[14])<<8 | uint64(b[13])<<16 | uint64(b[12])<<24 |
-			uint64(b[11])<<32 | uint64(b[10])<<40 | uint64(b[9])<<48 | uint64(b[8])<<56,
-		hi: uint64(b[7]) | uint64(b[6])<<8 | uint64(b[5])<<16 | uint64(b[4])<<24 |
-			uint64(b[3])<<32 | uint64(b[2])<<40 | uint64(b[1])<<48 | uint64(b[0])<<56,
+		lo: Uint64(b[15]) | Uint64(b[14])<<8 | Uint64(b[13])<<16 | Uint64(b[12])<<24 |
+			Uint64(b[11])<<32 | Uint64(b[10])<<40 | Uint64(b[9])<<48 | Uint64(b[8])<<56,
+		hi: Uint64(b[7]) | Uint64(b[6])<<8 | Uint64(b[5])<<16 | Uint64(b[4])<<24 |
+			Uint64(b[3])<<32 | Uint64(b[2])<<40 | Uint64(b[1])<<48 | Uint64(b[0])<<56,
 	}
 }
 
@@ -1044,10 +1043,10 @@ func (u Uint128) PutLittleEndian(b []byte) {
 func MustUint128FromLittleEndian(b []byte) Uint128 {
 	_ = b[15] // BCE
 	return Uint128{
-		lo: uint64(b[0]) | uint64(b[1])<<8 | uint64(b[2])<<16 | uint64(b[3])<<24 |
-			uint64(b[4])<<32 | uint64(b[5])<<40 | uint64(b[6])<<48 | uint64(b[7])<<56,
-		hi: uint64(b[8]) | uint64(b[9])<<8 | uint64(b[10])<<16 | uint64(b[11])<<24 |
-			uint64(b[12])<<32 | uint64(b[13])<<40 | uint64(b[14])<<48 | uint64(b[15])<<56,
+		lo: Uint64(b[0]) | Uint64(b[1])<<8 | Uint64(b[2])<<16 | Uint64(b[3])<<24 |
+			Uint64(b[4])<<32 | Uint64(b[5])<<40 | Uint64(b[6])<<48 | Uint64(b[7])<<56,
+		hi: Uint64(b[8]) | Uint64(b[9])<<8 | Uint64(b[10])<<16 | Uint64(b[11])<<24 |
+			Uint64(b[12])<<32 | Uint64(b[13])<<40 | Uint64(b[14])<<48 | Uint64(b[15])<<56,
 	}
 }
 
@@ -1089,4 +1088,18 @@ func SmallerUint128(a, b Uint128) Uint128 {
 		return b
 	}
 	return a
+}
+
+// Add64 returns the sum with carry of x, y and carry: sum = x + y + carry.
+// The carry input must be 0 or 1; otherwise the behavior is undefined.
+// The carryOut output is guaranteed to be 0 or 1.
+//
+// This function's execution time does not depend on the inputs.
+func bitsAdd64(x, y, carry Uint64) (sum, carryOut Uint64) {
+	sum = x + y + carry
+	// The sum will overflow if both top bits are set (x & y) or if one of them
+	// is (x | y), and a carry from the lower place happened. If such a carry
+	// happens, the top bit will be 1 + 0 + 1 = 0 (&^ sum).
+	carryOut = ((x & y) | ((x | y) &^ sum)) >> 63
+	return
 }

@@ -1149,7 +1149,7 @@ func (f fuzzInt128) Mul64() error {
 	i1, i2 := accInt128FromBigInt(b1), accI64FromBigInt(b2)
 	rb := new(big.Int).Mul(b1, b2)
 	rb = simulateBigInt128Overflow(rb)
-	ri := i1.Mul64(i2)
+	ri := i1.Mul64(Int64(i2))
 	return checkEqualInt128("mul64", ri, rb)
 }
 
@@ -1809,11 +1809,11 @@ func accUint128FromBigInt(b *big.Int) Uint128 {
 	return u
 }
 
-func accU64FromBigInt(b *big.Int) uint64 {
+func accU64FromBigInt(b *big.Int) Uint64 {
 	if !b.IsUint64() {
 		panic(fmt.Errorf("num: inaccurate conversion to U64 in fuzz tester for %s", b))
 	}
-	return b.Uint64()
+	return Uint64(b.Uint64())
 }
 
 func accI64FromBigInt(b *big.Int) int64 {

@@ -4,7 +4,27 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6f4d3a7e-6355-4614-bffa-94457603893c" name="Changes" comment="" />
+    <list default="true" id="6f4d3a7e-6355-4614-bffa-94457603893c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../src/physics/geometry/bit_tables.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/physics/geometry/bits.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/physics/geometry/bits_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../src/physics/geometry/dmul.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/aliases.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/aliases.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/consts.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/consts.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/face.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/face.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/int128.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/int128.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/int128_fuzz_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/int128_fuzz_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/int128_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/int128_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/point32.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/point32.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/point64.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/point64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/rational128.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/rational128.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/rational64.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/rational64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/uint128.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/uint128.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/uint128_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/uint128_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/physics/geometry/vertex.go" beforeDir="false" afterPath="$PROJECT_DIR$/../src/physics/geometry/vertex.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,12 +55,14 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
     &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
@@ -48,7 +70,7 @@
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -57,7 +79,7 @@
       <recent name="$PROJECT_DIR$/../src/physics/common" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Test.gobench geometry">
+  <component name="RunManager" selected="Go Test.go test geometry">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="epsilon" />
       <working_directory value="$PROJECT_DIR$/.." />
@@ -65,6 +87,14 @@
       <kind value="FILE" />
       <directory value="$PROJECT_DIR$/.." />
       <filePath value="$PROJECT_DIR$/.." />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build int128.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/.." />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$/.." />
+      <filePath value="$PROJECT_DIR$/../src/physics/geometry/int128.go" />
       <method v="2" />
     </configuration>
     <configuration name="BenchmarkUint64Mul in epsilon/src/physics/geometry" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -79,18 +109,6 @@
       <pattern value="^\QBenchmarkUint64Mul\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestFuzz in epsilon/src/physics/geometry" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="epsilon" />
-      <working_directory value="$PROJECT_DIR$/../src/physics/geometry" />
-      <root_directory value="$PROJECT_DIR$/.." />
-      <kind value="PACKAGE" />
-      <package value="epsilon/src/physics/geometry" />
-      <directory value="$PROJECT_DIR$/.." />
-      <filePath value="$PROJECT_DIR$/.." />
-      <framework value="gotest" />
-      <pattern value="^\QTestFuzz\E$" />
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
       <module name="epsilon" />
       <working_directory value="$PROJECT_DIR$/.." />
@@ -98,6 +116,16 @@
       <kind value="DIRECTORY" />
       <directory value="$PROJECT_DIR$/.." />
       <filePath value="$PROJECT_DIR$/.." />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="bits_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="epsilon" />
+      <working_directory value="$PROJECT_DIR$/../src/physics/geometry" />
+      <root_directory value="$PROJECT_DIR$/.." />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$/.." />
+      <filePath value="$PROJECT_DIR$/../src/physics/geometry/bits_test.go" />
       <framework value="gotest" />
       <method v="2" />
     </configuration>
@@ -121,23 +149,13 @@
       <framework value="gobench" />
       <method v="2" />
     </configuration>
-    <configuration name="int128_fuzz_test.go" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="epsilon" />
-      <working_directory value="$PROJECT_DIR$/../src/physics/geometry" />
-      <root_directory value="$PROJECT_DIR$/.." />
-      <kind value="FILE" />
-      <directory value="$PROJECT_DIR$/.." />
-      <filePath value="$PROJECT_DIR$/../src/physics/geometry/int128_fuzz_test.go" />
-      <framework value="gotest" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.gobench geometry" />
-        <item itemvalue="Go Test.BenchmarkUint64Mul in epsilon/src/physics/geometry" />
-        <item itemvalue="Go Test.TestFuzz in epsilon/src/physics/geometry" />
-        <item itemvalue="Go Test.int128_fuzz_test.go" />
         <item itemvalue="Go Test.go test geometry" />
+        <item itemvalue="Go Test.gobench geometry" />
+        <item itemvalue="Go Test.bits_test.go" />
+        <item itemvalue="Go Build.go build int128.go" />
+        <item itemvalue="Go Test.BenchmarkUint64Mul in epsilon/src/physics/geometry" />
       </list>
     </recent_temporary>
   </component>
